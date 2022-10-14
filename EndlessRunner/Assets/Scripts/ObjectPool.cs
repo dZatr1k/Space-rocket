@@ -1,0 +1,33 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ObjectPool : MonoBehaviour
+{
+    [SerializeField] private GameObject _container;
+    [SerializeField] private int _capacity;
+
+    private List<GameObject> _listOfEnemies = new List<GameObject>();
+
+    public List<GameObject> ListOfEnimies => _listOfEnemies;
+
+    protected void Initialize(GameObject prefab)
+    {
+        for (int i = 0; i < _capacity; i++)
+        {
+            GameObject spawned = Instantiate(prefab, _container.transform);
+            spawned.SetActive(false);
+            _listOfEnemies.Add(spawned);
+        }
+    }
+
+    protected bool TryGetObject(out GameObject result)
+    {
+        result = null;
+        foreach (var enemy in _listOfEnemies)
+        {
+            result = enemy.activeSelf == false ? enemy : result;
+        }
+        return result != null;
+    }
+}
